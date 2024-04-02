@@ -2,9 +2,19 @@ class DatabaseSystem:
     def __init__(self):
         self.indexes = {}
 
-    def create_index(self, index_name):
+    def create_index(self, index_name, index_type="avl"):
         if index_name not in self.indexes:
-            self.indexes[index_name] = DoubleThreadedAVL()
+            if index_type == "avl":
+                self.indexes[index_name] = DoubleThreadedAVL()
+            elif index_type == "btree":
+                # Initialize B-tree index
+                pass
+            elif index_type == "hash":
+                # Initialize hash index
+                pass
+            else:
+                print("Invalid index type.")
+                return False
             return True
         else:
             print("Index already exists.")
@@ -89,10 +99,30 @@ class DatabaseSystem:
         # Implement ACID transaction support
         pass
 
+    def replicate_data(self, index_name, target_node):
+        # Implement data replication logic
+        pass
+
+    def partition_data(self, index_name, num_partitions):
+        # Implement data partitioning logic
+        pass
+
+    def authenticate_user(self, username, password):
+        # Implement user authentication logic
+        pass
+
+    def authorize_user(self, username, operation):
+        # Implement user authorization logic
+        pass
+
+    def encrypt_data(self, data):
+        # Implement data encryption logic
+        pass
+
 # Example usage:
 db = DatabaseSystem()
-db.create_index("employees")
-db.create_index("projects")
+db.create_index("employees", "avl")
+db.create_index("projects", "avl")
 
 # Insert records
 db.insert_record("employees", "John Doe", {"age": 30, "position": "Manager"})
@@ -133,3 +163,18 @@ acid_transaction = [
     {"type": "insert", "index_name": "projects", "key": "ProjectB", "value": {"status": "planning", "manager": "Bob Smith"}},
 ]
 db.execute_acid_transaction(acid_transaction)
+
+# Replicate data
+db.replicate_data("employees", "node2")
+
+# Partition data
+db.partition_data("employees", 4)
+
+# Authenticate user
+db.authenticate_user("admin", "password")
+
+# Authorize user
+db.authorize_user("admin", "insert")
+
+# Encrypt data
+encrypted_data = db.encrypt_data({"username": "admin", "password": "password"})
