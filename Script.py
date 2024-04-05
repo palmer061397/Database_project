@@ -92,8 +92,17 @@ class DatabaseSystem:
         pass
 
     def establish_relationship(self, entity1_index, entity1_key, entity2_index, entity2_key):
-        # Placeholder for relationship management logic
-        pass
+        if entity1_index not in self.indexes:
+            self.indexes[entity1_index] = {}
+        if entity2_index not in self.indexes:
+            self.indexes[entity2_index] = {}
+
+        # Establishing relationship
+        self.indexes[entity1_index][entity1_key] = entity2_index
+        self.indexes[entity2_index][entity2_key] = entity1_index
+
+    def get_relationship(self, entity_index):
+        return self.indexes.get(entity_index, {})
 
     def execute_acid_transaction(self, operations):
         # Placeholder for ACID transaction support
@@ -182,3 +191,26 @@ db.authorize_user("admin", "insert")
 
 # Encrypt data
 encrypted_data = db.encrypt_data({"username": "admin", "password": "password"})
+
+
+
+
+
+
+# Example of using the DatabaseSystem class
+database_system = DatabaseSystem()
+
+# Example of establishing a relationship between two entities
+entity1_index = 1
+entity1_key = 'entity1'
+entity2_index = 2
+entity2_key = 'entity2'
+
+database_system.establish_relationship(entity1_index, entity1_key, entity2_index, entity2_key)
+
+# Example of retrieving relationships for an entity
+entity1_relationships = database_system.get_relationship(entity1_index)
+entity2_relationships = database_system.get_relationship(entity2_index)
+
+print("Relationships for Entity 1:", entity1_relationships)
+print("Relationships for Entity 2:", entity2_relationships)
