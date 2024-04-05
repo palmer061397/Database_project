@@ -112,13 +112,50 @@ class DatabaseSystem:
         # Placeholder for data replication logic
         pass
 
-    def partition_data(self, index_name, num_partitions):
-        # Placeholder for data partitioning logic
-        pass
+def partition_data(self, index_name, num_partitions):
+    if index_name in self.indexes:
+        index_data = self.indexes[index_name]
+        total_records = sum(len(data) for data in index_data.values())
+        records_per_partition = total_records // num_partitions
+        partitions = [{} for _ in range(num_partitions)]
 
-    def authenticate_user(self, username, password):
-        # Placeholder for user authentication logic
-        pass
+        # Distribute records into partitions
+        current_partition = 0
+        current_partition_count = 0
+        for key, records in index_data.items():
+            for record in records:
+                partitions[current_partition][key] = partitions[current_partition].get(key, []) + [record]
+                current_partition_count += 1
+                if current_partition_count >= records_per_partition:
+                    current_partition = min(current_partition + 1, num_partitions - 1)
+                    current_partition_count = 0
+
+        # Update index with partitioned data
+        for i, partition in enumerate(partitions):
+            partition_index_name = f"{index_name}_partition_{i}"
+            self.create_index(partition_index_name, "avl")  # Assuming AVL tree index
+            for key, records in partition.items():
+                for record in records:
+                    self.insert_record(partition_index_name, key, record)
+        print(f"Data partitioned for index '{index_name}' into {num_partitions} partitions.")
+    else:
+        print("Index does not exist.")
+
+def authenticate_user(self, username, password):
+    # Simple username/password authentication
+    # To be updated in later version
+    authorized_users = {
+        "user1": "password1",
+        "user2": "password2",
+        # Add more users as needed
+    }
+
+    if username in authorized_users and authorized_users[username] == password:
+        print("Authentication successful.")
+        return True
+    else:
+        print("Authentication failed: Invalid username or password.")
+        return False
 
     def authorize_user(self, username, operation):
         # Placeholder for user authorization logic
@@ -192,7 +229,8 @@ db.authorize_user("admin", "insert")
 # Encrypt data
 encrypted_data = db.encrypt_data({"username": "admin", "password": "password"})
 
-
+# Partition data
+db.partition_data("employees", 4)
 
 
 
